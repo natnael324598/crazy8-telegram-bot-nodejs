@@ -44,6 +44,7 @@ bot.command("newgame", (ctx) => {
   }
 
   sessions[chatId] = {
+    creatorId: ctx.from.id,
     players: [],
     gameStarted: false,
   };
@@ -110,7 +111,7 @@ bot.command("killgame", async (ctx) => {
 
     const isAdmin = ["administrator", "creator"].includes(member.status);
     const isCreator =
-      session.players.length > 0 && session.players[0].id === user.id;
+      session.players.length > 0 && session.creatorId === user.id
 
     if (!isCreator && !isAdmin) {
       return ctx.reply(
@@ -184,7 +185,7 @@ bot.command("close", (ctx) => {
   }
 
   // Only the creator (first player) can close
-  if (session.players.length === 0 || session.players[0].id !== user.id) {
+  if (session.players.length === 0 || session.creatorId !== user.id) {
     return ctx.reply("🚫 Only the creator of the game can close it.", {
       reply_to_message_id: ctx.message.message_id,
     });
